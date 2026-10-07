@@ -5,11 +5,7 @@
 #error "This product source must be compiled with 32-bit MSVC."
 #endif
 
-#pragma pack(push, 1)
-struct RouteDescriptorBlock_00424dd0_Product {
-    unsigned long words[0x4f];
-};
-#pragma pack(pop)
+#include "journey_allocation_runtime.h"
 
 extern "C" void* g_resourceModule;
 extern "C" void* g_activeRouteDescriptor;
@@ -31,7 +27,7 @@ extern "C" __declspec(dllimport) int __stdcall FreeResource(
 #pragma code_seg(".otsem")
 #pragma optimize("s", off)
 #pragma optimize("t", on)
-extern "C" void __stdcall OtLoadRouteDescriptor_RealCpp(short route_id)
+void RouteDescriptorBlock_00424dd0_Product::Load(short route_id)
 {
     unsigned short resource_name = static_cast<unsigned short>(route_id);
     resource_name = static_cast<unsigned short>(resource_name + 0x4b0);
@@ -53,3 +49,9 @@ extern "C" void __stdcall OtLoadRouteDescriptor_RealCpp(short route_id)
 }
 #pragma optimize("", on)
 #pragma code_seg()
+
+// Compatibility entry for existing recovered callers with a stdcall facade.
+extern "C" void __stdcall OtLoadRouteDescriptor_RealCpp(short route_id)
+{
+    static_cast<RouteDescriptorBlock_00424dd0_Product*>(g_activeRouteDescriptor)->Load(route_id);
+}

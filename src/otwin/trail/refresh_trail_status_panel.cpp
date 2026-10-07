@@ -1,4 +1,4 @@
-// Product semantic WIP for OtRefreshTrailStatusPanel @ 0x0042d5d0.
+// Recovered trail status-panel refresh @ 0x0042d5d0.
 
 #if !defined(_MSC_VER) || !defined(_M_IX86)
 #error "This product source must be compiled with 32-bit MSVC."
@@ -124,15 +124,15 @@ extern "C" __declspec(allocate(".otdat"))
 WindowHandle_0042d5d0 g_trailStatusNotifyWindow_004390d0 = 0;
 #pragma data_seg()
 
-static const char g_trailLocationPrefix_0042d5d0[] = "To ";
-static const char g_trailLocationSuffix_0042d5d0[] = ":";
-static const char g_trailMotionStopped_0042d5d0[] = "Stopped";
-static const char g_trailMotionRiverCrossing_0042d5d0[] = "River-crossing";
-static const char g_trailMotionMoving_0042d5d0[] = "Moving";
-static const char g_trailMotionWaiting_0042d5d0[] = "Waiting";
-static const char g_trailMotionCamping_0042d5d0[] = "Camping";
-static const char g_trailMotionDelayed_0042d5d0[] = "Delayed";
-static const char g_trailMotionResting_0042d5d0[] = "Resting";
+extern "C" const char g_trailLocationPrefix_0042d5d0[] = "To ";
+extern "C" const char g_trailLocationSuffix_0042d5d0[] = ":";
+extern "C" const char g_trailMotionStopped_0042d5d0[] = "Stopped";
+extern "C" const char g_trailMotionRiverCrossing_0042d5d0[] = "River-crossing";
+extern "C" const char g_trailMotionMoving_0042d5d0[] = "Moving";
+extern "C" const char g_trailMotionWaiting_0042d5d0[] = "Waiting";
+extern "C" const char g_trailMotionCamping_0042d5d0[] = "Camping";
+extern "C" const char g_trailMotionDelayed_0042d5d0[] = "Delayed";
+extern "C" const char g_trailMotionResting_0042d5d0[] = "Resting";
 
 #pragma code_seg(".otsem")
 #pragma optimize("s", off)
@@ -166,8 +166,6 @@ OtRefreshTrailStatusPanel_0042d5d0_ProductWip(
     char desired_text[40];
     char current_text[40];
     WindowHandle_0042d5d0 owner_window = owner;
-    const char* motion_text;
-    unsigned short stop_flags;
     int miles;
     DeviceContext_0042d5d0 dc;
 
@@ -197,7 +195,7 @@ OtRefreshTrailStatusPanel_0042d5d0_ProductWip(
     OTWIN_CLEAR_STATUS_TEXT_0042d5d0();
     strcpy(desired_text, g_trailLocationPrefix_0042d5d0);
     LoadStringA(
-        g_applicationModule_00405a40_20260603,
+        g_resourceModule,
         static_cast<RouteDescriptor_0042d5d0_ProductWip*>(
             g_activeRouteDescriptor)->route_id * 0x10 + 0xdb,
         desired_text + 3,
@@ -230,7 +228,7 @@ OtRefreshTrailStatusPanel_0042d5d0_ProductWip(
 
     OTWIN_CLEAR_STATUS_TEXT_0042d5d0();
     LoadStringA(
-        g_resourceModule,
+        g_applicationModule_00405a40_20260603,
         OTWIN_STATUS_JOURNEY_0042d5d0->daily_condition_value / 35 + 0xb0,
         desired_text,
         0x27);
@@ -238,7 +236,7 @@ OtRefreshTrailStatusPanel_0042d5d0_ProductWip(
 
     OTWIN_CLEAR_STATUS_TEXT_0042d5d0();
     LoadStringA(
-        g_resourceModule,
+        g_applicationModule_00405a40_20260603,
         OTWIN_STATUS_JOURNEY_0042d5d0->ration_level + 0x50,
         desired_text,
         0x27);
@@ -246,7 +244,7 @@ OtRefreshTrailStatusPanel_0042d5d0_ProductWip(
 
     OTWIN_CLEAR_STATUS_TEXT_0042d5d0();
     LoadStringA(
-        g_resourceModule,
+        g_applicationModule_00405a40_20260603,
         OTWIN_STATUS_JOURNEY_0042d5d0->pace + 0x60,
         desired_text,
         0x27);
@@ -254,32 +252,38 @@ OtRefreshTrailStatusPanel_0042d5d0_ProductWip(
 
     OTWIN_CLEAR_STATUS_TEXT_0042d5d0();
     LoadStringA(
-        g_resourceModule,
+        g_applicationModule_00405a40_20260603,
         reinterpret_cast<const PartyHealthScoreState_00419560_80pct*>(
             g_journeyState)->OtGetPartyHealthClassStringId_RealCpp(),
         desired_text,
         0x27);
     OTWIN_REFRESH_STATUS_TEXT_0042d5d0(0x1079, desired_text);
 
+    OTWIN_CLEAR_STATUS_TEXT_0042d5d0();
     if (this->stopped == 1) {
-        motion_text = g_trailMotionStopped_0042d5d0;
+        SetWindowTextA(GetDlgItem(owner_window, 0x107b),
+            g_trailMotionStopped_0042d5d0);
     } else {
-        stop_flags = OTWIN_STATUS_JOURNEY_0042d5d0->route_stop_flags;
-        if ((stop_flags & 0x10) != 0) {
-            motion_text = g_trailMotionResting_0042d5d0;
-        } else if ((stop_flags & 0x20) != 0) {
-            motion_text = g_trailMotionDelayed_0042d5d0;
+        if ((OTWIN_STATUS_JOURNEY_0042d5d0->route_stop_flags & 0x10) != 0) {
+            SetWindowTextA(GetDlgItem(owner_window, 0x107b),
+                g_trailMotionResting_0042d5d0);
+        } else if ((OTWIN_STATUS_JOURNEY_0042d5d0->route_stop_flags & 0x20) != 0) {
+            SetWindowTextA(GetDlgItem(owner_window, 0x107b),
+                g_trailMotionDelayed_0042d5d0);
         } else if (this->travelled_distance >= this->total_distance) {
-            motion_text = g_trailMotionCamping_0042d5d0;
-        } else if ((stop_flags & 0x40) != 0) {
-            motion_text = g_trailMotionWaiting_0042d5d0;
+            SetWindowTextA(GetDlgItem(owner_window, 0x107b),
+                g_trailMotionCamping_0042d5d0);
+        } else if ((OTWIN_STATUS_JOURNEY_0042d5d0->route_stop_flags & 0x40) != 0) {
+            SetWindowTextA(GetDlgItem(owner_window, 0x107b),
+                g_trailMotionWaiting_0042d5d0);
         } else if (this->river_crossing_mode == 0) {
-            motion_text = g_trailMotionMoving_0042d5d0;
+            SetWindowTextA(GetDlgItem(owner_window, 0x107b),
+                g_trailMotionMoving_0042d5d0);
         } else {
-            motion_text = g_trailMotionRiverCrossing_0042d5d0;
+            SetWindowTextA(GetDlgItem(owner_window, 0x107b),
+                g_trailMotionRiverCrossing_0042d5d0);
         }
     }
-    SetWindowTextA(GetDlgItem(owner_window, 0x107b), motion_text);
 
     if (IsWindow(g_trailStatusNotifyWindow_004390d0) != 0) {
         PostMessageA(g_trailStatusNotifyWindow_004390d0, 0x47e, 0, 0);

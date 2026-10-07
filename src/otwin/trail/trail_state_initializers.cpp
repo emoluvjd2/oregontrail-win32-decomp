@@ -60,4 +60,9 @@ GraveSiteRuntime_00411ee0::OtInitGraveSiteRuntime_RealCpp()
     return this;
 }
 
+GraveSiteRuntime_00411ee0::GraveSiteRuntime_00411ee0()
+{
+    cached_zone = -1;
+}
+
 #pragma optimize("", on)

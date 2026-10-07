@@ -403,7 +403,7 @@ extern "C" __declspec(allocate(".otsem"))
 const char g_mainWindowTitle_004044f0[] = "The Oregon Trail";
 extern "C" __declspec(allocate(".otsem"))
 const char g_mainWindowCreateFailure_004044f0[] =
-    "Couldn't create the main window.";
+    "Couldn't create the main window!";
 extern "C" __declspec(allocate(".otsem"))
 const char g_logoMidiName_004044f0[] = "logo.mid";
 extern "C" __declspec(allocate(".otsem"))
@@ -542,59 +542,6 @@ ApplicationPositionedBitmap_004044f0::
 
 extern "C" const char g_mainWindowClassName_00404f60[];
 
-static void OtCreateMainWindow_004035b0(
-    MainWindowRuntimeObject_00405a40* runtime)
-{
-    SavedMainWindowRect_004035b0 placement;
-    OSVersionInfoA_004035b0 version;
-    int frame_width;
-    int frame_height;
-    int window_width;
-    int window_height;
-
-    if (g_mainWindowClassRegistered_00439120 == 0 &&
-        g_previousInstance_00405a40_20260603 == 0) {
-        OtRegisterMainWindowClass_00404f60_RealCpp();
-        g_mainWindowClassRegistered_00439120 = 1;
-    }
-
-    frame_width = GetSystemMetrics(5);
-    frame_height = GetSystemMetrics(6);
-    version.size = sizeof(version);
-    GetVersionExA(&version);
-    if (version.major_version > 3) {
-        frame_width += GetSystemMetrics(45);
-        frame_height += GetSystemMetrics(46);
-    }
-
-    window_width = frame_width * 2 + 0x280;
-    window_height = GetSystemMetrics(15) + GetSystemMetrics(4) +
-        frame_height * 2 + 0x1b8;
-    placement.x = 0;
-    placement.y = 0;
-    placement.width = window_width;
-    placement.height = window_height;
-    OtLoadSavedDialogPlacement_00401110_RealCpp(
-        g_mainWindowPlacementSection_004039d0,
-        &placement);
-
-    runtime->main_window = CreateWindowExA(
-        0,
-        g_mainWindowClassName_00404f60,
-        g_mainWindowTitle_004044f0,
-        0x00ca0000ul,
-        placement.x,
-        placement.y,
-        window_width,
-        window_height,
-        0,
-        0,
-        g_applicationModule_00405a40_20260603,
-        runtime);
-    if (runtime->main_window == 0) {
-        FatalAppExitA(0, g_mainWindowCreateFailure_004044f0);
-    }
-}
 
 #pragma optimize("s", off)
 #pragma optimize("t", on)

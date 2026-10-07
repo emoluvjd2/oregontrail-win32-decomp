@@ -1,3 +1,5 @@
+#include "drop_supplies_owned_state.h"
+extern "C" void OtInitializeDropSuppliesDialog_0041efb0(void* dialog, void* result);
 // Product semantic WIP for the drop-supplies dialog callback @ 0x0041ead0.
 //
 // Ghidra originally treated this callback as a raw label.  The recovered
@@ -236,38 +238,6 @@ static void OtPopulateDropSupplyRow_0041ead0(
     SetWindowTextA(GetDlgItem(dialog, 0x1204 + row), number);
 }
 
-static void OtInitializeDropSuppliesDialog_0041efb0_ProductWip(
-    void* dialog,
-    DropSuppliesDialogResult_0041ead0* result)
-{
-    DropSuppliesJourneyState_0041ead0* journey =
-        (DropSuppliesJourneyState_0041ead0*)g_journeyState;
-
-    OtCenterDropSuppliesDialog_0041ead0(dialog);
-    SetWindowLongA(dialog, 8, (long)result);
-
-    OtPopulateDropSupplyRow_0041ead0(
-        dialog, 0, 0x1f5, 3, journey->clothing);
-    OtPopulateDropSupplyRow_0041ead0(
-        dialog, 1, 0x1f6, 2, (journey->ammunition + 19) / 20);
-    OtPopulateDropSupplyRow_0041ead0(
-        dialog, 2, 0x1f7, 40, journey->wagon_wheels);
-    OtPopulateDropSupplyRow_0041ead0(
-        dialog, 3, 0x1f8, 70, journey->wagon_axles);
-    OtPopulateDropSupplyRow_0041ead0(
-        dialog, 4, 0x1f9, 50, journey->wagon_tongues);
-    OtPopulateDropSupplyRow_0041ead0(
-        dialog,
-        5,
-        0x1fa,
-        0,
-        journey->food_pounds + journey->pending_food_pounds);
-
-    PostMessageA(GetDlgItem(dialog, 0x11f9), 0x00c5, 4, 0);
-    SetFocus(GetDlgItem(dialog, 0x11f9));
-    SendMessageA(dialog, 0x0401, 300, 0);
-}
-
 static int OtFindSelectedDropSupply_0041ead0(void* dialog)
 {
     int selected_item = 0;
@@ -440,13 +410,30 @@ static int OtCommitDropSuppliesSelection_0041f9c0_ProductWip(
     return 1;
 }
 
+struct PositionedBitmap_0040b7b0_Semantic {
+    int OtBlitWrappedPositionedBitmap_0040b7b0_Semantic(void* dc, int x, int y);
+};
+
 static long OtDrawDropSuppliesControl_0041ead0(
+    void* dialog,
     DropSuppliesDrawItem_0041ead0* draw_item)
 {
     char text[100];
-
+    if (draw_item == 0) return 1;
     SelectPalette(draw_item->dc, g_gamePalette, 0);
     RealizePalette(draw_item->dc);
+    if (draw_item->control_id == 0x12c || draw_item->control_id == 0x12d) {
+        DropOwnedState* state = reinterpret_cast<DropOwnedState*>(GetWindowLongA(dialog, 8));
+        if (state == 0) return 1;
+        PositionedBitmapDescriptorState_0040ba40* bitmap;
+        if (draw_item->control_id == 0x12c)
+            bitmap = (draw_item->item_state & 1) ? &state->okay_down : &state->okay_up;
+        else
+            bitmap = (draw_item->item_state & 1) ? &state->cancel_down : &state->cancel_up;
+        reinterpret_cast<PositionedBitmap_0040b7b0_Semantic*>(bitmap)->
+            OtBlitWrappedPositionedBitmap_0040b7b0_Semantic(draw_item->dc, 0, 0);
+        return 1;
+    }
     FillRect(
         draw_item->dc,
         &draw_item->item_rect,
@@ -473,6 +460,7 @@ extern "C" long __stdcall OtDropSuppliesDialogProc_0041ead0_ProductWip(
 {
     switch (message) {
     case 0x0002:
+        delete reinterpret_cast<DropOwnedState*>(GetWindowLongA(dialog, 8));
         SetWindowLongA(dialog, 8, 0);
         OtSetDropSuppliesBusyCursor_0041ead0(0);
         return 1;
@@ -514,11 +502,12 @@ extern "C" long __stdcall OtDropSuppliesDialogProc_0041ead0_ProductWip(
 
     case 0x002b:
         return OtDrawDropSuppliesControl_0041ead0(
+            dialog,
             (DropSuppliesDrawItem_0041ead0*)lparam);
 
     case 0x0110:
         OtSetDropSuppliesBusyCursor_0041ead0(1);
-        OtInitializeDropSuppliesDialog_0041efb0_ProductWip(
+        OtInitializeDropSuppliesDialog_0041efb0(
             dialog,
             (DropSuppliesDialogResult_0041ead0*)lparam);
         OtSetDropSuppliesBusyCursor_0041ead0(0);
@@ -526,9 +515,9 @@ extern "C" long __stdcall OtDropSuppliesDialogProc_0041ead0_ProductWip(
 
     case 0x0111: {
         unsigned int control_id = wparam & 0xffff;
-        DropSuppliesDialogResult_0041ead0* result =
-            (DropSuppliesDialogResult_0041ead0*)
-                GetWindowLongA(dialog, 8);
+        DropOwnedState* owner = reinterpret_cast<DropOwnedState*>(GetWindowLongA(dialog, 8));
+        DropSuppliesDialogResult_0041ead0* result = owner != 0
+            ? static_cast<DropSuppliesDialogResult_0041ead0*>(owner->result) : 0;
 
         if (control_id == 300) {
             if (OtCommitDropSuppliesSelection_0041f9c0_ProductWip(

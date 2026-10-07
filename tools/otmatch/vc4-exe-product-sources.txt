@@ -5,6 +5,7 @@ src/otwin/app/application_message_pump_runtime.cpp
 src/otwin/app/application_menu_dialog_callbacks.cpp
 src/otwin/app/application_menu_routers.cpp
 src/otwin/app/application_runtime_lifecycle.cpp
+src/otwin/app/main_window_creation.cpp
 src/otwin/app/active_text_commit.cpp
 src/otwin/app/active_text_runtime.cpp
 src/otwin/app/app_option_state_runtime.cpp
@@ -251,3 +252,11 @@ src/otwin/trade/populate_general_store_form.cpp
 src/otwin/trade/store_extension_dialog_runtime.cpp
 src/otwin/trade/trade_offer_dialog_runtime.cpp
 src/otwin/trade/validate_and_commit_general_store_purchase.cpp
+src/otwin/graphics/construct_positioned_bitmap_from_descriptor.cpp
+src/otwin/trail/populate_status_dialog.cpp
+src/otwin/trail/initialize_start_date_dialog.cpp
+src/otwin/trail/initialize_drop_supplies_dialog.cpp
+src/otwin/trail/initialize_status_dialog.cpp
+src/otwin/app/initialize_score_list_dialog.cpp
+src/otwin/app/draw_score_list_item.cpp
+src/otwin/app/score_list_dialog_callback.cpp

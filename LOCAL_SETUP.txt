@@ -1,0 +1,116 @@
+Oregon Trail local decompilation workspace
+
+Run commands from C:\Users\Joey\oregontrail-win32-decomp.
+
+Compiler:
+  toolchain\MSDEV (isolated extraction; no global PATH or registry changes)
+  CL 10.00.5270 / LINK 3.00.5270, x86 Visual C++ 4.0.
+  Source: https://winworldpc.com/download/48045f5e-18c3-9a11-c3a4-e284a2c3a570
+  Archive SHA512 verified against the download listing:
+  460e6a0b5f5de7cf782f4145dc07f4aca56035cce2e5426e443cc0b2d1607f8bb78bedf44881b4d653006315386bb29f6dde35b56638ce8fdfde1816052bc8bf
+
+Game media source:
+  https://www.myabandonware.com/game/the-oregon-trail-1-2-for-windows-37z
+  Win/Mac hybrid ISO download, preserved under artifacts\downloads.
+  Expected local binaries: Sample\Oregon Trail CD\OTWIN32\Oregon32.exe
+                           Sample\Oregon Trail CD\OTWIN32\OREGON32.DLL
+  The EXE SHA256 matches the frozen upstream evidence:
+  c81585430a7918f64e4f1af13177c4b533a42179b508c43bb2ab5bcced24c35f
+
+Compile/link and compare a recovered graphics function:
+  powershell -NoProfile -ExecutionPolicy Bypass -File tools\otmatch\test-local-toolchain.ps1
+  Results: artifacts\otmatch\smoke\results.csv
+  This isolated diagnostic does not award canonical project credit.
+  Verified locally: OtDrawBeveledRect_0000b4c0 passes the existing matcher:
+  450-byte envelope, 410 bytes compared after relocation masks.
+  Input SHA256 hashes are recorded in artifacts\input-hashes.json.
+
+Matcher self-tests (no game required):
+  powershell -NoProfile -ExecutionPolicy Bypass -File tools\otmatch\test-verification-contract.ps1
+
+Create a Ghidra project and export C pseudocode, disassembly, and inventories:
+  powershell -NoProfile -ExecutionPolicy Bypass -File tools\otmatch\analyze-local-originals.ps1 -GhidraRoot C:\Users\Joey\Apps\ghidra_12.1.2_PUBLIC
+  Project: artifacts\ghidra\projects\OregonTrailLocal.gpr
+  Exports: artifacts\ghidra\exports
+  Use -Reexport for an existing project. Keep the GUI project closed while
+  running headless analysis. Fresh inventories are diagnostic and may differ
+  from the author's unpublished inventories; do not replace the baseline.
+  Initial automatic analysis exported 733 EXE functions and 69 DLL functions.
+  The upstream EXE inventory has 788 functions; manually defined functions
+  and boundaries still need reconciliation before whole-program reporting.
+  The manifest's 109 WIP rows are indexed in artifacts\recovery-queue.csv.
+
+Build the available public product sources:
+  powershell -NoProfile -ExecutionPolicy Bypass -File tools\otmatch\build-public-candidates.ps1
+  Outputs: artifacts\otmatch\public-diagnostic
+  The wrapper preserves compiler flags for present source files and records
+  omitted metadata entries separately. All three candidate DLLs link without
+  unresolved-symbol workarounds. The initial full comparison reproduced all
+  748 accepted functions; results are in baseline-results.csv in that folder.
+
+Inputs missing from the published snapshot:
+  - src\otwin\_recovery and src\otwin\_exact are deliberately omitted.
+  - vc4-tu-metadata.csv references missing recovery translation units.
+  - The pinned decomp-harness and original Ghidra inventories are unpublished.
+  The unwrapped build stops at missing recovery metadata source paths.
+  The public wrapper bypasses only those absent metadata entries, which are
+  not needed to reproduce the 748 accepted functions. Remaining WIP symbols
+  still include missing implementations. Fresh Ghidra inventories must not
+  replace the published instruction denominator without reconciliation.
+
+The existing matcher supports isolated comparison and its verification
+contract passes locally. Reconstruct readable C++, inspect compiler output,
+and compare complete function envelopes. Do not inflate progress by changing
+masks, marking work-in-progress accepted, or linking unresolved placeholders.
+
+Game media, toolchain, projects, and generated analysis stay in ignored paths.
+The published build/report.json is an upstream report, not a local result.
+
+Verified local milestone (2026-10-01):
+  38,733 / 64,499 instructions = 60.0520938309%.
+  755 / 857 functions accepted; all 748 upstream matches preserved.
+  Seven new matches contribute 2,807 instructions and 9,433 body bytes.
+  Main window creation; journey initialization; status callback, setup and
+  text population; drop-supplies setup; start-date setup.
+  All 503 relocated operands in those seven functions passed identity checks.
+  Native exception metadata and bitmap cleanup paths were checked as well.
+  Source-policy audit: 256 roots, 291 included files, zero violations.
+  Whole-game runtime behavior has not been tested.
+
+Rebuild and reproduce the full local verification:
+  powershell -NoProfile -ExecutionPolicy Bypass -File tools\otmatch\verify-local-progress.ps1
+  Requires the game binaries above, VC4, and Python with pefile installed.
+  The focused local-probe.py additionally requires capstone.
+  Output: artifacts\otmatch\public-diagnostic\local-progress.json
+  Detailed matches: artifacts\otmatch\public-diagnostic\after-results.csv
+  A source-controlled snapshot is in docs\local-progress.json.
+  Use -ReuseResults to recheck existing results without rebuilding. Reused
+  results must have matching manifest, candidate DLL and map hashes.
+
+The strict matcher's standalone process reports a nonzero exit for absent WIP
+symbols in the public snapshot. The verification wrapper separately requires
+all 857 result rows and rejects any failed accepted function. Unmatched WIP
+functions do not contribute progress.
+
+Verified follow-up milestone (2026-10-06):
+  39,939 / 64,499 instructions = 61.9218902619%.
+  760 / 857 functions accepted; all 759 previous local matches preserved.
+  This batch adds 557 instructions and 1,604 body bytes in the trail
+  status-panel refresh. It restores the final buffer clear and direct motion
+  branches, and corrects application/resource-module string lookup ownership.
+  The already-matched health-class function now targets its original member
+  ABI, with an explicit checked call to the WIP health scorer.
+  All 656 relocated operands passed checks: 655 across the twelve new
+  functions, plus the health-class function's dependency call.
+  The five command-table targets outside the callback envelope are verified.
+  Source-policy audit: 259 roots, 295 included files, zero violations.
+  Five status-panel evidence tests passed, including swapped module operands,
+  changed motion-label data, and a call redirected to the legacy health wrapper.
+  The existing three command-table evidence tests cover redirected save/cancel
+  and default/delete targets that leave the function bytes intact.
+
+Run the focused command-table evidence tests after building:
+  python tools\otmatch\test-score-command-evidence.py
+
+Run the focused status-panel operand evidence tests after building:
+  python tools\otmatch\test-trail-status-evidence.py

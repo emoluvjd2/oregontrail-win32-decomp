@@ -1,0 +1,15 @@
+offset,kind,original_target,candidate_identity
+8,global,0x00439120,_g_mainWindowClassRegistered_00439120
+23,global,0x004390b0,_g_previousInstance_00405a40_20260603
+31,call,0x00404f60,_OtRegisterMainWindowClass_00404f60_RealCpp
+37,global,0x00439120,_g_mainWindowClassRegistered_00439120
+49,import,0x0043d650,USER32.dll!GetSystemMetrics
+78,import,0x0043d478,KERNEL32.dll!GetVersionExA
+159,string,0x0043920c,_g_mainWindowPlacementSection_004039d0
+164,call,0x00401110,_OtLoadSavedDialogPlacement_00401110_RealCpp
+172,global,0x004390a8,_g_applicationModule_00405a40_20260603
+198,string,0x004391f8,_g_mainWindowTitle_004044f0
+203,string,0x00439110,_g_mainWindowClassName_00404f60
+210,import,0x0043d660,USER32.dll!CreateWindowExA
+222,string,0x004391d4,_g_mainWindowCreateFailure_004044f0
+229,import,0x0043d47c,KERNEL32.dll!FatalAppExitA

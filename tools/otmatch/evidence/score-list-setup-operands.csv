@@ -1,0 +1,25 @@
+offset,kind,original_target,candidate_identity
+12,owner-eh,0x43032c,native score-list allocation unwind metadata
+40,import,0x43d5e0,USER32.dll!GetWindowRect
+51,import,0x43d5ac,USER32.dll!GetParent
+58,import,0x43d5a8,USER32.dll!GetClientRect
+109,import,0x43d5ac,USER32.dll!GetParent
+116,import,0x43d5f8,USER32.dll!ClientToScreen
+177,import,0x43d5d4,USER32.dll!SetWindowPos
+187,allocator-call,0x430a40,??2@YAPAXI@Z
+218,call,0x42fd80,??0TrailGameScoreList_0042fc30@@QAE@XZ
+238,call,0x42fda0,?OtLoadScoreList_0042fda0_RealCpp@TrailGameScoreList_0042fc30@@QAEHXZ
+247,string,0x4395ac,_g_emptyDialogText_00430180
+252,string,0x43a5f4,_g_trailGameAllocationMessage_00430180
+259,import,0x43d5ac,USER32.dll!GetParent
+266,import,0x43d5b0,USER32.dll!MessageBoxA
+276,import,0x43d5b8,USER32.dll!SetWindowLongA
+283,import,0x43d590,USER32.dll!GetDC
+296,import,0x43d3bc,GDI32.dll!GetTextMetricsA
+309,import,0x43d598,USER32.dll!ReleaseDC
+317,import,0x43d650,USER32.dll!GetSystemMetrics
+343,global,0x4390a8,_g_applicationModule_00405a40_20260603
+366,string,0x4395ac,_g_emptyDialogText_00430180
+373,string,0x43a5ec,_g_trailGameListBoxClass_00430350_Product
+381,import,0x43d660,USER32.dll!CreateWindowExA
+404,import,0x43d5a4,USER32.dll!SendMessageA

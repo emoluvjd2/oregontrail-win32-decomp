@@ -1,0 +1,17 @@
+offset,kind,original_target,candidate_identity
+16,import,0x43d694,USER32.dll!GetWindowLongA
+36,import,0x43d3ac,GDI32.dll!GetTextColor
+56,import,0x43d408,GDI32.dll!GetBkColor
+76,import,0x43d574,USER32.dll!GetSysColor
+89,import,0x43d3b8,GDI32.dll!SetTextColor
+106,import,0x43d3a4,GDI32.dll!SetBkColor
+116,import,0x43d3c8,GDI32.dll!CreateSolidBrush
+130,import,0x43d68c,USER32.dll!FillRect
+137,import,0x43d3d8,GDI32.dll!DeleteObject
+203,import,0x43d594,USER32.dll!DrawTextA
+269,import,0x43d594,USER32.dll!DrawTextA
+284,import,0x43d3b8,GDI32.dll!SetTextColor
+299,import,0x43d3a4,GDI32.dll!SetBkColor
+318,import,0x43d5a4,USER32.dll!SendMessageA
+324,import,0x43d56c,USER32.dll!EnableWindow
+330,import,0x43d5e4,USER32.dll!GetDlgItem

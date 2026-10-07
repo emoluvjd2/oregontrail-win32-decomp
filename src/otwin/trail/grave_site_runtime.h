@@ -15,6 +15,7 @@ struct GraveSiteRuntime_00411ee0 {
     char epitaph[45];
     int grave_event_reported;
 
+    GraveSiteRuntime_00411ee0();
     GraveSiteRuntime_00411ee0* OtInitGraveSiteRuntime_RealCpp();
     void OtWriteGraveRecordToIni_000120b0_Product(
         const char* epitaph_text);

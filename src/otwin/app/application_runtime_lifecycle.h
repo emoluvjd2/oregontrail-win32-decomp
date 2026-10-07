@@ -86,4 +86,7 @@ typedef char MainWindowRuntimeTimerFlagOffsetCheck_00405a40[
 
 #pragma pack(pop)
 
+extern "C" void __fastcall OtCreateMainWindow_004035b0(
+    MainWindowRuntimeObject_00405a40* runtime);
+
 #endif

@@ -1,0 +1,21 @@
+offset,kind,original_target,candidate_identity
+78,call,0x430000,_OtDrawScoreListItem_00430000
+106,call,0x430180,_OtInitializeScoreListDialog_00430180
+137,import,0x43d694,USER32.dll!GetWindowLongA
+165,score-command-table,0x43053c,commands 300 through 304; function-relative jump targets
+187,call,0x42ff00,?OtSaveLeaderboardProfile_0042ff00_RealCpp@TrailLeaderboardProfileList_0042ff00@@QAEXXZ
+193,call,0x430730,??3@YAXPAX@Z
+212,import,0x43d5ac,USER32.dll!GetParent
+219,import,0x43d5a4,USER32.dll!SendMessageA
+228,import,0x43d5bc,USER32.dll!EndDialog
+249,call,0x430730,??3@YAXPAX@Z
+261,import,0x43d5bc,USER32.dll!EndDialog
+283,call,0x42fe90,?OtFormatTrailOverlayCaption_RealCpp@TrailOverlayCaptionState_0042fe90@@QAEHXZ
+295,import,0x43d5e4,USER32.dll!GetDlgItem
+315,import,0x43d5a4,USER32.dll!SendMessageA
+336,import,0x43d5a4,USER32.dll!SendMessageA
+367,import,0x43d5e4,USER32.dll!GetDlgItem
+390,import,0x43d5a4,USER32.dll!SendMessageA
+416,import,0x43d5a4,USER32.dll!SendMessageA
+428,call,0x42fd20,?OtRemoveRiverRecordAt_0042fd20_RealCpp@RiverRecordTable_0042fd20@@QAEXH@Z
+475,import,0x43d3c0,GDI32.dll!GetStockObject

@@ -1,3 +1,4 @@
+#include "journey_allocation_runtime.h"
 // Promotion: OtCopyTrailDateNameTriple @ 0x00419430.
 //
 // The original copies three null-terminated global strings (current day-name,
@@ -53,4 +54,12 @@ int TrailCalendarNameTriple_00419430::OtMatchTrailDateNameTriple_RealCpp()
     register int year_after = year_compare > 0;
 
     return day_compare == 0 && month_compare == 0 && year_after == 0;
+}
+
+// Native constructor used by new expressions so VC4 emits the original EH flow.
+JourneyRuntime_00419430::JourneyRuntime_00419430()
+{
+    strcpy(day_name, g_currentDayName_00439D30);
+    strcpy(month_name, g_currentMonthName_00439D38);
+    strcpy(year_name, g_currentYearName_00439D28);
 }

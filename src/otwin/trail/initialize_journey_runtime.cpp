@@ -1,3 +1,6 @@
+#include "journey_allocation_runtime.h"
+#include "grave_site_runtime.h"
+
 // Product-tree semantic recovery of OtInitializeJourneyRuntime @ 0x0041a120.
 
 #if !defined(_MSC_VER) || !defined(_M_IX86)
@@ -23,10 +26,6 @@ extern void* __cdecl operator new(unsigned int bytes);
 #pragma intrinsic(memset)
 #pragma comment(lib, "kernel32.lib")
 
-struct TrailCalendarNameTriple_00419430 {
-    TrailCalendarNameTriple_00419430* OtCopyTrailDateNameTriple_RealCpp();
-};
-
 struct JourneyStateDefaults_0041a000_20260525 {
     void OtJourneyInitStateDefaultsMaskClosedFELTDR_0041a000();
 };
@@ -35,12 +34,12 @@ struct GraveEpitaphState_00411fd0_20260603;
 
 extern "C" void* g_journeyState;
 extern "C" void* g_activeRouteDescriptor;
-extern "C" void* g_graveSiteRuntime;
-extern "C" void* g_resourceModule;
+
+extern "C" void* g_applicationModule_00405a40_20260603;
 extern "C" void* g_cachedTrailResourceHandle;
 
 extern "C" void __cdecl OtInitTrailEventTable_00018230_RealCpp();
-extern "C" void __stdcall OtLoadRouteDescriptor_RealCpp(short route_id);
+
 extern "C" void __fastcall OtRefreshGraveEpitaphIniCache_00411fd0_RealCpp(
     GraveEpitaphState_00411fd0_20260603* state);
 
@@ -50,7 +49,7 @@ extern "C" void* g_cachedTrailWeatherResourceData_0041a120_ProductWip = 0;
 
 #pragma code_seg(".otsem")
 extern "C" __declspec(allocate(".otsem"))
-const char g_weatherResourceName_0041a120_ProductWip[] = "WEATHER";
+const char g_weatherResourceName_0041a120_ProductWip[] = "WEATHER_1";
 
 #pragma optimize("s", off)
 #pragma optimize("t", on)
@@ -58,35 +57,19 @@ const char g_weatherResourceName_0041a120_ProductWip[] = "WEATHER";
 extern "C" void __cdecl OtInitializeJourneyRuntime_0001a120_ProductWip()
 {
     if (g_journeyState == 0) {
-        g_journeyState = operator new(0x158);
-        if (g_journeyState != 0) {
-            memset(g_journeyState, 0, 0x158);
-            reinterpret_cast<TrailCalendarNameTriple_00419430*>(
-                g_journeyState)->OtCopyTrailDateNameTriple_RealCpp();
-        }
+        g_journeyState = new JourneyRuntime_00419430;
     }
-
     if (g_activeRouteDescriptor == 0) {
         g_activeRouteDescriptor = operator new(0x13c);
-        if (g_activeRouteDescriptor != 0) {
-            memset(g_activeRouteDescriptor, 0, 0x13c);
-        }
     }
-
     if (g_graveSiteRuntime == 0) {
-        g_graveSiteRuntime = operator new(0x48);
-        if (g_graveSiteRuntime != 0) {
-            memset(g_graveSiteRuntime, 0, 0x48);
-            *static_cast<short*>(g_graveSiteRuntime) = -1;
-        }
+        g_graveSiteRuntime = new GraveSiteRuntime_00411ee0;
     }
 
-    void* resource_info = FindResourceA(
-        g_resourceModule,
+    g_cachedTrailResourceHandle = LoadResource(g_applicationModule_00405a40_20260603, FindResourceA(
+        g_applicationModule_00405a40_20260603,
         g_weatherResourceName_0041a120_ProductWip,
-        reinterpret_cast<const void*>(0x4b0));
-    g_cachedTrailResourceHandle =
-        LoadResource(g_resourceModule, resource_info);
+        reinterpret_cast<const void*>(0x4b0)));
     g_cachedTrailWeatherResourceData_0041a120_ProductWip =
         LockResource(g_cachedTrailResourceHandle);
 
@@ -97,7 +80,7 @@ extern "C" void __cdecl OtInitializeJourneyRuntime_0001a120_ProductWip()
                 OtJourneyInitStateDefaultsMaskClosedFELTDR_0041a000();
     }
     if (g_activeRouteDescriptor != 0) {
-        OtLoadRouteDescriptor_RealCpp(0);
+        reinterpret_cast<RouteDescriptorBlock_00424dd0_Product*>(g_activeRouteDescriptor)->Load(0);
     }
     if (g_graveSiteRuntime != 0) {
         OtRefreshGraveEpitaphIniCache_00411fd0_RealCpp(

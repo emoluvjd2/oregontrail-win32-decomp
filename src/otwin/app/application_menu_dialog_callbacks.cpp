@@ -109,18 +109,7 @@ struct AboutDialogState_0041afa0_Product {
     AboutDialogState_0041afa0_Product();
 };
 
-struct TrailLeaderboardEntry_0042fc30 {
-    char name[20];
-    char score[11];
-};
-
-struct TrailGameScoreList_0042fc30 {
-    int count;
-    TrailLeaderboardEntry_0042fc30 entries[10];
-
-    TrailGameScoreList_0042fc30();
-    int OtLoadScoreList_0042fda0_RealCpp();
-};
+#include "../trail/trail_score_list.h"
 
 struct TrailOverlayCaptionState_0042fe90 {
     int line_count;
@@ -378,7 +367,7 @@ extern "C" const char g_aboutDialogAllocationCaption_0041afa0[] =
 extern "C" const char g_aboutBlupWavePath_0041afa0[] = "blup.wav";
 extern "C" const char g_trailGameListBoxClass_00430350_Product[] = "LISTBOX";
 extern "C" const char g_trailGameAllocationMessage_00430180[] =
-    "Can't allocate memory for the list box.";
+    "Can't allocate memory for the list of legends.";
 extern "C" const char g_emptyDialogText_00430180[] = "";
 
 #pragma optimize("s", off)
@@ -677,197 +666,8 @@ extern "C" long __stdcall OtIntroDialogProc_0040bb30_Product(
 }
 
 TrailGameScoreList_0042fc30::TrailGameScoreList_0042fc30()
-    : count(0)
 {
     memset(entries, 0, sizeof(entries));
-}
-
-static void OtDrawTrailGameScoreItem(
-    OtDialogHandle dialog,
-    OtMenuDrawItem* item)
-{
-    TrailGameScoreList_0042fc30* scores;
-    unsigned long old_text;
-    unsigned long old_background;
-    unsigned long fill_color;
-    OtGdiHandle brush;
-    unsigned int text_length;
-
-    scores = (TrailGameScoreList_0042fc30*)GetWindowLongA(dialog, 8);
-    if (scores == 0) {
-        return;
-    }
-
-    old_text = GetTextColor(item->dc);
-    old_background = GetBkColor(item->dc);
-    fill_color = old_background;
-    if ((item->item_state & 1) != 0) {
-        SetTextColor(item->dc, GetSysColor(14));
-        fill_color = GetSysColor(13);
-        SetBkColor(item->dc, fill_color);
-    }
-
-    brush = CreateSolidBrush(fill_color);
-    FillRect(item->dc, &item->item_rect, brush);
-    DeleteObject(brush);
-
-    text_length = strlen(scores->entries[item->item_id].name);
-    DrawTextA(
-        item->dc,
-        scores->entries[item->item_id].name,
-        text_length < 20 ? -1 : 20,
-        &item->item_rect,
-        0);
-    text_length = strlen(scores->entries[item->item_id].score);
-    DrawTextA(
-        item->dc,
-        scores->entries[item->item_id].score,
-        text_length < 10 ? -1 : 10,
-        &item->item_rect,
-        2);
-
-    SetTextColor(item->dc, old_text);
-    SetBkColor(item->dc, old_background);
-    EnableWindow(
-        GetDlgItem(dialog, 0x130),
-        SendMessageA(item->item_window, 0x0190, 0, 0) > 0);
-}
-
-static void OtInitializeTrailGameShutdownDialog(OtDialogHandle dialog)
-{
-    OtMenuRect dialog_rect;
-    OtMenuTextMetricA metrics;
-    TrailGameScoreList_0042fc30* scores;
-    OtDeviceContext dc;
-    OtDialogHandle listbox;
-    int scroll_width;
-    int index;
-
-    OtCenterMenuDialogInParent(dialog, &dialog_rect);
-
-    scores = new TrailGameScoreList_0042fc30;
-    if (scores != 0) {
-        scores->OtLoadScoreList_0042fda0_RealCpp();
-    } else {
-        MessageBoxA(
-            GetParent(dialog),
-            g_trailGameAllocationMessage_00430180,
-            g_emptyDialogText_00430180,
-            0);
-    }
-    SetWindowLongA(dialog, 8, (long)scores);
-
-    dc = GetDC(dialog);
-    GetTextMetricsA(dc, &metrics);
-    ReleaseDC(dialog, dc);
-    scroll_width = GetSystemMetrics(7);
-    listbox = CreateWindowExA(
-        0,
-        g_trailGameListBoxClass_00430350_Product,
-        g_emptyDialogText_00430180,
-        0x50a00018ul,
-        10,
-        10,
-        ((-10 - scroll_width) * 2 - dialog_rect.left) + dialog_rect.right,
-        metrics.height * 10,
-        dialog,
-        (void*)0x01f4,
-        g_applicationModule_00405a40_20260603,
-        0);
-
-    index = 0;
-    if (scores != 0 && scores->count > 0) {
-        do {
-            SendMessageA(listbox, 0x0180, 0, 0);
-            ++index;
-        } while (index < scores->count);
-    }
-}
-
-extern "C" long __stdcall OtTrailGameShutdownDialogProc_00430350_Product(
-    OtDialogHandle dialog,
-    unsigned int message,
-    unsigned int wparam,
-    long lparam)
-{
-    TrailGameScoreList_0042fc30* scores;
-    OtDialogHandle listbox;
-    unsigned int selected_items[10];
-    int selected_count;
-    int index;
-    int remaining;
-    unsigned int* shifted_item;
-
-    if (message == 0x002b) {
-        OtDrawTrailGameScoreItem(dialog, (OtMenuDrawItem*)lparam);
-        return 1;
-    }
-    if (message == 0x0110) {
-        OtInitializeTrailGameShutdownDialog(dialog);
-        return 1;
-    }
-    if (message == 0x0136) {
-        return (long)GetStockObject(0);
-    }
-    if (message != 0x0111) {
-        return 0;
-    }
-
-    scores = (TrailGameScoreList_0042fc30*)GetWindowLongA(dialog, 8);
-    switch (wparam & 0xffff) {
-    case 300:
-        reinterpret_cast<TrailLeaderboardProfileList_0042ff00*>(scores)->
-            OtSaveLeaderboardProfile_0042ff00_RealCpp();
-        delete scores;
-        SendMessageA(GetParent(dialog), 0x047f, 0, 0);
-        EndDialog(dialog, 1);
-        return 1;
-
-    case 0x12d:
-        delete scores;
-        EndDialog(dialog, 1);
-        return 1;
-
-    case 0x12f:
-        reinterpret_cast<TrailOverlayCaptionState_0042fe90*>(scores)->
-            OtFormatTrailOverlayCaption_RealCpp();
-        listbox = GetDlgItem(dialog, 500);
-        SendMessageA(listbox, 0x0184, 0, 0);
-        index = 0;
-        if (scores->count > 0) {
-            do {
-                SendMessageA(listbox, 0x0180, 0, 0);
-                ++index;
-            } while (index < scores->count);
-        }
-        return 1;
-
-    case 0x130:
-        listbox = GetDlgItem(dialog, 500);
-        selected_count = (int)SendMessageA(
-            listbox,
-            0x0191,
-            10,
-            (long)selected_items);
-        index = 0;
-        while (index < selected_count) {
-            SendMessageA(listbox, 0x0182, selected_items[index], 0);
-            reinterpret_cast<RiverRecordTable_0042fd20*>(scores)->
-                OtRemoveRiverRecordAt_0042fd20_RealCpp(
-                    selected_items[index]);
-            ++index;
-            shifted_item = selected_items + index;
-            remaining = selected_count - index;
-            while (remaining > 0) {
-                --*shifted_item;
-                ++shifted_item;
-                --remaining;
-            }
-        }
-        return 1;
-    }
-
-    return 1;
 }
 
 static long OtDrawAboutCloseButton(

@@ -99,119 +99,7 @@ static const char g_startDateAllocationCaption_00423da0[] =
     "StartDateDlgProc";
 static const char g_startDateLeavingWave_00423da0[] = "leaving.wav";
 
-static void OtInitStartDateDialog_Product_00424730(
-    OtDialogHandle_Product dialog)
-{
-    OtDialogRect_Product parent_rect;
-    unsigned int base_units;
-    StartDateDialogState_00423da0_Product* state;
-    int control_id;
-    int index;
-
-    SendMessageA(
-        dialog,
-        0x0030,
-        reinterpret_cast<unsigned int>(g_optionMenuFont_004390d4_00405320),
-        1);
-    GetClientRect(GetParent(dialog), &parent_rect);
-    base_units = GetDialogBaseUnits();
-    SetWindowPos(
-        dialog,
-        0,
-        parent_rect.left + 10,
-        parent_rect.top + 10,
-        parent_rect.right - parent_rect.left - 20,
-        parent_rect.bottom - parent_rect.top - 20,
-        4);
-
-    for (control_id = 0x057a; control_id <= 0x057e; ++control_id) {
-        OtScaleDialogChildFromDialogUnits_00401290_DirectImport(
-            dialog,
-            control_id,
-            static_cast<unsigned short>(base_units),
-            static_cast<unsigned short>(base_units >> 16));
-    }
-    for (control_id = 0x0582; control_id <= 0x0587; ++control_id) {
-        OtScaleDialogChildFromDialogUnits_00401290_DirectImport(
-            dialog,
-            control_id,
-            static_cast<unsigned short>(base_units),
-            static_cast<unsigned short>(base_units >> 16));
-    }
-    OtScaleDialogChildFromDialogUnits_00401290_DirectImport(
-        dialog, 0x012d,
-        static_cast<unsigned short>(base_units),
-        static_cast<unsigned short>(base_units >> 16));
-    OtScaleDialogChildFromDialogUnits_00401290_DirectImport(
-        dialog, 0x0132,
-        static_cast<unsigned short>(base_units),
-        static_cast<unsigned short>(base_units >> 16));
-    OtScaleDialogChildFromDialogUnits_00401290_DirectImport(
-        dialog, 0x0133,
-        static_cast<unsigned short>(base_units),
-        static_cast<unsigned short>(base_units >> 16));
-
-    state = new StartDateDialogState_00423da0_Product;
-    if (state == 0) {
-        MessageBoxA(
-            GetParent(dialog),
-            g_startDateAllocationText_00423da0,
-            g_startDateAllocationCaption_00423da0,
-            0);
-        PostQuitMessage(0);
-        return;
-    }
-
-    if (g_cdMediaMode_00439108 != 0) {
-        state->play_audio_up.
-            OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-                g_applicationModule_00405a40_20260603, 0x282c);
-        state->play_audio_down.
-            OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-                g_applicationModule_00405a40_20260603, 0x282d);
-        state->stop_audio_up.
-            OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-                g_applicationModule_00405a40_20260603, 0x282e);
-        state->stop_audio_down.
-            OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-                g_applicationModule_00405a40_20260603, 0x282f);
-        OtResizeControl_RealCpp(
-            dialog, 0x0132,
-            state->play_audio_up.width,
-            state->play_audio_up.height);
-        OtResizeControl_RealCpp(
-            dialog, 0x0133,
-            state->stop_audio_up.width,
-            state->stop_audio_up.height);
-    }
-
-    for (index = 0; index < 6; ++index) {
-        state->date_choice[index].up.
-            OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-                g_resourceModule,
-                static_cast<short>(0x283d + index * 2));
-        state->date_choice[index].down.
-            OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-                g_resourceModule,
-                static_cast<short>(0x283e + index * 2));
-        OtResizeControl_RealCpp(
-            dialog,
-            0x0582 + index,
-            state->date_choice[index].up.width,
-            state->date_choice[index].up.height);
-    }
-
-    state->back_up.OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-        g_applicationModule_00405a40_20260603, 0x2828);
-    state->back_down.OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-        g_applicationModule_00405a40_20260603, 0x2829);
-    state->selected_date_marker.
-        OtLoadPositionedBitmapDescriptor_0040ba40_RealCpp(
-            g_resourceModule, 0x0579);
-    OtResizeControl_RealCpp(
-        dialog, 0x012d, state->back_up.width, state->back_up.height);
-    SetWindowLongA(dialog, 8, reinterpret_cast<long>(state));
-}
+extern "C" void OtInitStartDateDialog_00424730(void* dialog);
 
 static void OtLeaveStartDateDialog_00423da0(
     OtDialogHandle_Product dialog,
@@ -297,7 +185,7 @@ extern "C" int __stdcall OtStartDateDialogProc_00023da0_Wip(
     case 0x0110:
         OtSetDialogBusyCursor_Product();
         g_activeScreenDialogWindow_00404dd0 = dialog;
-        OtInitStartDateDialog_Product_00424730(dialog);
+        OtInitStartDateDialog_00424730(dialog);
         HideCaret(0);
         return 1;
 
